@@ -1,0 +1,256 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    background-color: #E9F0F8;
+    color: #0F172A;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    letter-spacing: -0.01em;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Outfit', 'Inter', sans-serif;
+    color: #0F172A;
+  }
+
+  /* Form Controls with High-Contrast Accessibility */
+  input[type="text"],
+  input[type="email"],
+  input[type="password"],
+  input[type="number"],
+  textarea,
+  select {
+    background-color: rgba(255, 255, 255, 0.9);
+    border: 1.5px solid #CBD5E1;
+    color: #0F172A;
+    font-weight: 500;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  input[type="text"]:focus,
+  input[type="email"]:focus,
+  input[type="password"]:focus,
+  input[type="number"]:focus,
+  textarea:focus,
+  select:focus {
+    background-color: #FFFFFF;
+    border-color: #2563EB;
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.18);
+  }
+
+  input::placeholder,
+  textarea::placeholder {
+    color: #94A3B8;
+  }
+}
+
+/* Ambient soft glass background with icy-blue and soft-teal ambient meshes */
+.ambient-bg {
+  background: 
+    radial-gradient(circle at 10% 12%, rgba(219, 234, 254, 0.9) 0%, transparent 45%),
+    radial-gradient(circle at 88% 18%, rgba(209, 250, 229, 0.85) 0%, transparent 45%),
+    radial-gradient(circle at 50% 80%, rgba(243, 247, 251, 0.95) 0%, transparent 55%),
+    #E9F0F8;
+  background-attachment: fixed;
+}
+
+/* Section 3: Exact Glassmorphism Specification */
+.glass-card {
+  background: rgba(255, 255, 255, 0.65);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  border: 1px solid rgba(255, 255, 255, 0.75);
+  border-radius: 24px;
+  box-shadow: 0 8px 30px rgba(30, 60, 90, 0.08);
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.glass-card:hover {
+  background: rgba(255, 255, 255, 0.82);
+  border-color: rgba(255, 255, 255, 0.95);
+  box-shadow: 0 14px 40px rgba(30, 60, 90, 0.12);
+  transform: translateY(-2px);
+}
+
+.glass-panel {
+  background: rgba(255, 255, 255, 0.72);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.85);
+  border-radius: 24px;
+  box-shadow: 0 10px 35px rgba(30, 60, 90, 0.08);
+}
+
+.glass-pill {
+  background: rgba(255, 255, 255, 0.68);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  border-radius: 9999px;
+  box-shadow: 0 4px 15px rgba(30, 60, 90, 0.04);
+}
+
+/* ========================================================
+   BOLD, HIGH-CONTRAST BUTTON DESIGN SYSTEM
+   Soft glass surfaces + bold blue/green buttons + dark readable typography.
+   ======================================================== */
+
+/* Primary Button: Bold Blue-to-Green gradient */
+.btn-primary {
+  background: linear-gradient(135deg, #2563EB 0%, #10B981 100%) !important;
+  color: #FFFFFF !important;
+  font-weight: 700 !important;
+  border: 1px solid rgba(255, 255, 255, 0.25) !important;
+  box-shadow: 0 4px 14px rgba(37, 99, 235, 0.28) !important;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  border-radius: 14px;
+  cursor: pointer;
+}
+
+.btn-primary:hover:not(:disabled) {
+  transform: translateY(-1.5px) !important;
+  box-shadow: 0 8px 24px rgba(37, 99, 235, 0.38) !important;
+  filter: brightness(1.08) !important;
+}
+
+.btn-primary:active:not(:disabled) {
+  transform: translateY(0.5px) !important;
+  box-shadow: 0 2px 8px rgba(37, 99, 235, 0.25) !important;
+  filter: brightness(0.96) !important;
+}
+
+.btn-primary:disabled {
+  opacity: 0.55 !important;
+  cursor: not-allowed !important;
+  transform: none !important;
+  box-shadow: none !important;
+}
+
+/* Secondary Button Blue: Solid #2563EB with bold white text */
+.btn-secondary-blue {
+  background-color: #2563EB !important;
+  color: #FFFFFF !important;
+  font-weight: 700 !important;
+  border: 1px solid rgba(255, 255, 255, 0.2) !important;
+  box-shadow: 0 4px 14px rgba(37, 99, 235, 0.25) !important;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  border-radius: 14px;
+  cursor: pointer;
+}
+
+.btn-secondary-blue:hover:not(:disabled) {
+  background-color: #1D4ED8 !important;
+  transform: translateY(-1.5px) !important;
+  box-shadow: 0 8px 22px rgba(37, 99, 235, 0.35) !important;
+}
+
+.btn-secondary-blue:active:not(:disabled) {
+  transform: translateY(0.5px) !important;
+}
+
+.btn-secondary-blue:disabled {
+  opacity: 0.55 !important;
+  cursor: not-allowed !important;
+  transform: none !important;
+  box-shadow: none !important;
+}
+
+/* Secondary Button Green: Solid #10B981 with bold white text */
+.btn-secondary-green {
+  background-color: #10B981 !important;
+  color: #FFFFFF !important;
+  font-weight: 700 !important;
+  border: 1px solid rgba(255, 255, 255, 0.2) !important;
+  box-shadow: 0 4px 14px rgba(16, 185, 129, 0.25) !important;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  border-radius: 14px;
+  cursor: pointer;
+}
+
+.btn-secondary-green:hover:not(:disabled) {
+  background-color: #047857 !important;
+  transform: translateY(-1.5px) !important;
+  box-shadow: 0 8px 22px rgba(16, 185, 129, 0.35) !important;
+}
+
+.btn-secondary-green:active:not(:disabled) {
+  transform: translateY(0.5px) !important;
+}
+
+.btn-secondary-green:disabled {
+  opacity: 0.55 !important;
+  cursor: not-allowed !important;
+  transform: none !important;
+  box-shadow: none !important;
+}
+
+/* Call-to-action button alias */
+.btn-cta {
+  background: linear-gradient(135deg, #2563EB 0%, #10B981 100%) !important;
+  color: #FFFFFF !important;
+  font-weight: 700 !important;
+  border: 1px solid rgba(255, 255, 255, 0.25) !important;
+  box-shadow: 0 6px 18px rgba(37, 99, 235, 0.3) !important;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  border-radius: 14px;
+  cursor: pointer;
+}
+
+.btn-cta:hover:not(:disabled) {
+  transform: translateY(-1.5px) !important;
+  box-shadow: 0 10px 28px rgba(37, 99, 235, 0.42) !important;
+  filter: brightness(1.08) !important;
+}
+
+.btn-cta:active:not(:disabled) {
+  transform: translateY(0.5px) !important;
+  box-shadow: 0 3px 10px rgba(37, 99, 235, 0.25) !important;
+}
+
+/* Signature Trend Finder - Vertical Card Reels/Shorts Swipe Experience */
+.trend-feed-container {
+  scroll-snap-type: y mandatory;
+  overflow-y: scroll;
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+}
+
+.trend-card-snap {
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+}
+
+/* Custom subtle desktop scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: rgba(233, 240, 248, 0.5);
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(148, 163, 184, 0.4);
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(100, 116, 139, 0.65);
+}

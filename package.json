@@ -1,0 +1,25 @@
+{
+  "name": "t-to-g-root",
+  "version": "1.0.0",
+  "private": true,
+  "description": "T→G (Trend to Growth) - Complete Full-Stack Business Intelligence Platform with Replaceable Intelligence Layer",
+  "scripts": {
+    "install:all": "cd backend && npm install && cd ../frontend && npm install",
+    "dev:backend": "cd backend && npm run dev",
+    "dev:frontend": "cd frontend && npm run dev",
+    "build:backend": "cd backend && npm run build",
+    "build:frontend": "cd frontend && npm run build",
+    "build": "npm run build:backend && npm run build:frontend",
+    "test": "cd backend && npm test"
+  },
+  "keywords": [
+    "trend-intelligence",
+    "business-intelligence",
+    "growth",
+    "opportunity-engine",
+    "ai-ready",
+    "glassmorphism"
+  ],
+  "author": "GrowthWorks",
+  "license": "MIT"
+}
