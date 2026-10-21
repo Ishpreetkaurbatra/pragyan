@@ -32,10 +32,10 @@ export const Navbar: React.FC<NavbarProps> = ({ currentTab, setCurrentTab, unrea
   };
 
   return (
-    <header className="sticky top-0 z-40 w-full glass-panel border-b border-white/80 px-8 py-3.5 transition-all duration-200">
+    <header className="sticky top-0 z-40 w-full glass-panel !border-t-0 !rounded-t-none border-b border-white/80 px-8 py-3.5 transition-all duration-200">
       <div className="flex items-center justify-between max-w-[1720px] mx-auto">
         {/* Brand Logo & Slogan */}
-        <div className="flex items-center space-x-3.5 cursor-pointer" onClick={() => setCurrentTab('landing')}>
+        <div className="flex items-center space-x-3.5 cursor-pointer" onClick={() => setCurrentTab('welcome')}>
           <div className="w-11 h-11 rounded-2xl bg-gradient-to-tr from-primaryblue via-secondaryblue to-growthgreen flex items-center justify-center text-white shadow-md shadow-primaryblue/20">
             <TrendingUp className="w-6 h-6 stroke-[2.5]" />
           </div>

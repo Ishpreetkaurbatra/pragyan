@@ -84,6 +84,12 @@
   box-shadow: 0 10px 35px rgba(30, 60, 90, 0.08);
 }
 
+header.glass-panel {
+  border-top: none !important;
+  border-top-left-radius: 0 !important;
+  border-top-right-radius: 0 !important;
+}
+
 .glass-pill {
   background: rgba(255, 255, 255, 0.68);
   backdrop-filter: blur(12px);
@@ -254,3 +260,43 @@
 ::-webkit-scrollbar-thumb:hover {
   background: rgba(100, 116, 139, 0.65);
 }
+
+/* Staggered entrance animations for Welcome Screen */
+@keyframes welcomeFadeUp {
+  0% {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.anim-welcome-1 {
+  animation: welcomeFadeUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.05s both;
+}
+
+.anim-welcome-2 {
+  animation: welcomeFadeUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.18s both;
+}
+
+.anim-welcome-3 {
+  animation: welcomeFadeUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.30s both;
+}
+
+.anim-welcome-4 {
+  animation: welcomeFadeUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.42s both;
+}
+
+.anim-welcome-5 {
+  animation: welcomeFadeUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.54s both;
+}
+
+/* Smooth exit transition when transitioning from Welcome to Login */
+.welcome-exit {
+  transition: opacity 0.24s cubic-bezier(0.4, 0, 0.2, 1), transform 0.24s cubic-bezier(0.4, 0, 0.2, 1);
+  opacity: 0 !important;
+  transform: translateY(-12px) !important;
+}
+
