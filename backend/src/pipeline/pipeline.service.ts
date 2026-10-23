@@ -370,18 +370,23 @@ export class PipelineService {
 
       // Calculate location relevance & business fit for all clusters
       const candidates = fullyProcessedClusters.map(cluster => {
-        const relScores = cluster.signals.map(s =>
-          this.locationFilter.evaluateRelevance(s, city, state, country).score
+        const evaluations = cluster.signals.map(s =>
+          this.locationFilter.evaluateRelevance(s, city, state, country)
         );
-        const avgLocationRelevance = relScores.length > 0
-          ? Math.round(relScores.reduce((a, b) => a + b, 0) / relScores.length)
+        const avgScore = evaluations.length > 0
+          ? Math.round(evaluations.reduce((a, b) => a + b.score, 0) / evaluations.length)
           : 80;
+        const avgRelevance = evaluations.length > 0
+          ? Number((evaluations.reduce((a, b) => a + b.locationRelevance, 0) / evaluations.length).toFixed(2))
+          : 0.80;
+        const topReason = evaluations[0]?.locationReason || `${city}-specific signal`;
 
-        const businessFit = this.businessFitEngine.calculateFit(businessContext, cluster, avgLocationRelevance);
+        const businessFit = this.businessFitEngine.calculateFit(businessContext, cluster, avgScore);
 
         return {
           cluster,
-          locationRelevance: avgLocationRelevance,
+          locationRelevance: avgRelevance,
+          locationReason: topReason,
           businessFit,
         };
       });
@@ -443,27 +448,33 @@ export class PipelineService {
         this.repo.saveActionPlan(item.cluster.id, actionPlan);
 
         // Step 9: Traceable source evidence records
-        const evidence: TraceableEvidenceRecord[] = item.cluster.signals.slice(0, 10).map(s => ({
-          trendId: item.cluster.id,
-          source: s.source,
-          sourceRecordId: s.sourceRecordId,
-          title: s.title,
-          url: s.url,
-          timestamp: s.timestamp,
-          location: s.location?.city || city,
-          metrics: {
-            views: s.engagementMetrics?.views,
-            likes: s.engagementMetrics?.likes,
-            comments: s.engagementMetrics?.comments,
-            shares: s.engagementMetrics?.shares,
-            score: s.engagementMetrics?.score,
-            ...(s.rawMetrics || {}),
-          },
-        }));
+        const evidence: TraceableEvidenceRecord[] = item.cluster.signals.slice(0, 10).map(s => {
+          const locEval = this.locationFilter.evaluateRelevance(s, city, state, country);
+          return {
+            trendId: item.cluster.id,
+            source: s.source,
+            sourceRecordId: s.sourceRecordId,
+            title: s.title,
+            url: s.url,
+            timestamp: s.timestamp,
+            location: s.location?.city || city,
+            locationRelevance: locEval.locationRelevance,
+            locationReason: locEval.locationReason,
+            metrics: {
+              views: s.engagementMetrics?.views,
+              likes: s.engagementMetrics?.likes,
+              comments: s.engagementMetrics?.comments,
+              shares: s.engagementMetrics?.shares,
+              score: s.engagementMetrics?.score,
+              ...(s.rawMetrics || {}),
+            },
+          };
+        });
 
         analyzedTrends.push({
           cluster: item.cluster,
           locationRelevance: item.locationRelevance,
+          locationReason: item.locationReason,
           businessFit: item.businessFit,
           intelligencePackage,
           aiAnalysis: aiResult.analysis,

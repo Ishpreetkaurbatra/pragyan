@@ -91,11 +91,14 @@ export class YouTubeConnector implements DataSourceConnector {
 
     await this.respectRateLimit();
 
+    const cityLower = (params.city || '').toLowerCase();
+    const isAhilyanagar = cityLower === 'ahilyanagar' || cityLower === 'ahmednagar';
+    const cityQuery = isAhilyanagar ? '(Ahilyanagar OR Ahmednagar)' : (params.city || '');
+
     const query = [
-      params.city || '',
+      cityQuery,
       ...(params.keywords || []),
-      'trending',
-      'review',
+      'trending OR review OR food OR cafe OR market',
     ].filter(Boolean).join(' ');
 
     const maxResults = Math.min(params.limit || 15, 25);

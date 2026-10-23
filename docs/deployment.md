@@ -60,8 +60,12 @@ The backend server listens on `PORT` (default: 4000) and exposes health and API 
 - `GET /api/trends/runs/:id` — Pipeline run execution audit record
 
 ### Frontend Service:
-Deploy `frontend/dist/` to any static hosting provider (e.g. Firebase Hosting, Cloudflare Pages, Vercel, Nginx).
-Configure reverse proxy or `VITE_API_URL` to point to the production backend endpoint.
+Deploy `frontend/dist/` to any static hosting provider (e.g. Vercel, Cloudflare Pages, Firebase Hosting, Nginx).
+On Vercel:
+1. Set Root Directory to `frontend` (or keep root with build command `cd frontend && npm run build` and output directory `frontend/dist`).
+2. Set Environment Variable:
+   - `VITE_API_BASE_URL`: URL of the deployed backend API (e.g. `https://tg-backend.onrender.com` or `https://api.yourdomain.com`).
+   *Note: If no deployed backend exists yet, the frontend will informatively display `Backend unavailable. Please check the T→G server connection.` instead of crashing.*
 
 ---
 

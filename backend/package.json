@@ -7,7 +7,9 @@
     "dev": "ts-node-dev --respawn --transpile-only src/server.ts",
     "build": "tsc",
     "start": "node dist/server.js",
-    "test": "ts-node src/tests/api.test.ts && ts-node src/tests/trend-intelligence-engine.test.ts && ts-node src/tests/real-data-connectors.test.ts"
+    "test": "ts-node src/tests/api.test.ts && ts-node src/tests/trend-intelligence-engine.test.ts && ts-node src/tests/real-data-connectors.test.ts && ts-node src/tests/ahilyanagar.test.ts",
+    "test:ahilyanagar": "ts-node src/tests/ahilyanagar.test.ts",
+    "test:e2e": "ts-node src/tests/e2e-user-journey.test.ts"
   },
   "dependencies": {
     "@google/genai": "^2.31.0",

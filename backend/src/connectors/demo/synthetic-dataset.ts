@@ -15,6 +15,84 @@ export interface CityTrendProfile {
 }
 
 export const SYNTHETIC_CITY_PROFILES: Record<string, CityTrendProfile> = {
+  'Ahilyanagar': {
+    city: 'Ahilyanagar',
+    state: 'Maharashtra',
+    country: 'India',
+    clusters: {
+      'Artisan Cold Beverages & Thick Shakes': {
+        category: 'Food & Beverage',
+        weeklyVolumes: [16, 24, 38, 56],
+        headline: 'College crowds and evening hangouts along Savedi and Pipeline Road drive surging demand for premium thick shakes and artisan cold brews',
+        sampleQueries: ['thick shakes savedi ahilyanagar', 'cold coffee pipeline road ahmednagar', 'iced cafe drinks ahilyanagar'],
+        audienceAge: '18-28',
+        growthNarrative: 'Accelerating +47.4% across campus corridors and evening cafe spots in Ahilyanagar.',
+      },
+      'Millet-Based Healthy Snacks': {
+        category: 'Food & Beverage',
+        weeklyVolumes: [12, 19, 30, 46],
+        headline: 'Roasted jowar/bajra puffs and clean-label bakery goods trending across wellness and family corridors in Ahilyanagar',
+        sampleQueries: ['roasted millet snacks ahilyanagar', 'jowar cookies bakery ahmednagar', 'healthy diet snacks savedi'],
+        audienceAge: '22-45',
+        growthNarrative: 'Local grain processing heritage meets modern snacking demand with +53.3% weekly velocity.',
+      },
+      'Eco-Friendly Pilgrimage & Food Packaging': {
+        category: 'Sustainable Living',
+        weeklyVolumes: [10, 16, 26, 39],
+        headline: 'Eateries and travel hubs along the Shirdi-Ahilyanagar corridor adopt compostable bagasse boxes and paper takeaway packaging',
+        sampleQueries: ['biodegradable packaging wholesale ahilyanagar', 'bagasse food containers ahmednagar', 'eco friendly takeaway boxes'],
+        audienceAge: '25-50',
+        growthNarrative: 'Corridor tourism and takeaway demand driving +50% weekly momentum.',
+      },
+      'Smart Farm-to-Table Dairy & Organic Produce': {
+        category: 'Agri & Retail',
+        weeklyVolumes: [9, 14, 22, 33],
+        headline: 'Direct-from-farm A2 cow milk delivery and chemical-free organic produce gaining traction in residential Ahilyanagar',
+        sampleQueries: ['organic milk delivery ahilyanagar', 'pure a2 cow milk savedi ahmednagar', 'fresh farm vegetables online ahilyanagar'],
+        audienceAge: '28-55',
+        growthNarrative: 'Household health priorities spurring +50% repeat subscription growth.',
+      },
+    },
+  },
+  'Ahmednagar': {
+    city: 'Ahilyanagar',
+    state: 'Maharashtra',
+    country: 'India',
+    clusters: {
+      'Artisan Cold Beverages & Thick Shakes': {
+        category: 'Food & Beverage',
+        weeklyVolumes: [16, 24, 38, 56],
+        headline: 'College crowds and evening hangouts along Savedi and Pipeline Road drive surging demand for premium thick shakes and artisan cold brews',
+        sampleQueries: ['thick shakes savedi ahilyanagar', 'cold coffee pipeline road ahmednagar', 'iced cafe drinks ahilyanagar'],
+        audienceAge: '18-28',
+        growthNarrative: 'Accelerating +47.4% across campus corridors and evening cafe spots in Ahilyanagar.',
+      },
+      'Millet-Based Healthy Snacks': {
+        category: 'Food & Beverage',
+        weeklyVolumes: [12, 19, 30, 46],
+        headline: 'Roasted jowar/bajra puffs and clean-label bakery goods trending across wellness and family corridors in Ahilyanagar',
+        sampleQueries: ['roasted millet snacks ahilyanagar', 'jowar cookies bakery ahmednagar', 'healthy diet snacks savedi'],
+        audienceAge: '22-45',
+        growthNarrative: 'Local grain processing heritage meets modern snacking demand with +53.3% weekly velocity.',
+      },
+      'Eco-Friendly Pilgrimage & Food Packaging': {
+        category: 'Sustainable Living',
+        weeklyVolumes: [10, 16, 26, 39],
+        headline: 'Eateries and travel hubs along the Shirdi-Ahilyanagar corridor adopt compostable bagasse boxes and paper takeaway packaging',
+        sampleQueries: ['biodegradable packaging wholesale ahilyanagar', 'bagasse food containers ahmednagar', 'eco friendly takeaway boxes'],
+        audienceAge: '25-50',
+        growthNarrative: 'Corridor tourism and takeaway demand driving +50% weekly momentum.',
+      },
+      'Smart Farm-to-Table Dairy & Organic Produce': {
+        category: 'Agri & Retail',
+        weeklyVolumes: [9, 14, 22, 33],
+        headline: 'Direct-from-farm A2 cow milk delivery and chemical-free organic produce gaining traction in residential Ahilyanagar',
+        sampleQueries: ['organic milk delivery ahilyanagar', 'pure a2 cow milk savedi ahmednagar', 'fresh farm vegetables online ahilyanagar'],
+        audienceAge: '28-55',
+        growthNarrative: 'Household health priorities spurring +50% repeat subscription growth.',
+      },
+    },
+  },
   'Nashik': {
     city: 'Nashik',
     state: 'Maharashtra',

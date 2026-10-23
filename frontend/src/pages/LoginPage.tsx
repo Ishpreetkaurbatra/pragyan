@@ -320,7 +320,11 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess, onNavigate
 
     try {
       if (isRegister) {
-        await api.switchRole('BUSINESS');
+        await api.register({
+          email: email.trim(),
+          fullName: fullName.trim(),
+          role: 'BUSINESS',
+        });
         try {
           await api.updateBusinessProfile({
             business_name: businessName,
@@ -344,7 +348,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess, onNavigate
         }
         onLoginSuccess('BUSINESS');
       } else {
-        await api.switchRole('BUSINESS');
+        await api.login(email.trim(), 'BUSINESS');
         onLoginSuccess('BUSINESS');
       }
     } catch (err: any) {
@@ -360,7 +364,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({ onLoginSuccess, onNavigate
     setEmail(demoEmail);
 
     try {
-      await api.switchRole(role);
+      await api.login(demoEmail, role);
       onLoginSuccess(role);
     } catch (err: any) {
       setErrorMsg(err.message || 'Quick login failed.');

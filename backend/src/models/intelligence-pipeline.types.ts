@@ -249,6 +249,8 @@ export interface TraceableEvidenceRecord {
   url?: string;
   timestamp: string;
   location?: string;
+  locationRelevance?: number;
+  locationReason?: string;
   metrics: {
     views?: number;
     likes?: number;
@@ -262,6 +264,7 @@ export interface TraceableEvidenceRecord {
 export interface AnalyzedTrendResult {
   cluster: TrendCluster;
   locationRelevance: number;
+  locationReason?: string;
   businessFit: BusinessFit;
   intelligencePackage: TrendIntelligencePackage;
   aiAnalysis?: StructuredAiAnalysis;

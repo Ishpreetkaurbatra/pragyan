@@ -112,12 +112,14 @@ export class RedditConnector implements DataSourceConnector {
     await this.respectRateLimit();
     const token = await this.ensureAuthToken();
 
-    const city = params.city || 'india';
-    const kw = params.keywords?.join(' ') || 'trend business';
+    const cityLower = (params.city || '').toLowerCase();
+    const isAhilyanagar = cityLower === 'ahilyanagar' || cityLower === 'ahmednagar';
 
-    // Try city subreddit first, or search r/india if city subreddit does not exist
-    const subTarget = city.toLowerCase().replace(/[^a-z0-9]/g, '');
-    const searchUrl = `https://oauth.reddit.com/r/${subTarget}/search?q=${encodeURIComponent(kw)}&restrict_sr=1&sort=new&limit=${params.limit || 15}`;
+    const kw = params.keywords?.join(' ') || 'trend business';
+    const subTarget = isAhilyanagar ? 'ahmednagar' : (params.city || 'india').toLowerCase().replace(/[^a-z0-9]/g, '');
+    const searchTerm = isAhilyanagar ? `(Ahilyanagar OR Ahmednagar) ${kw}` : kw;
+
+    const searchUrl = `https://oauth.reddit.com/r/${subTarget}/search?q=${encodeURIComponent(searchTerm)}&restrict_sr=1&sort=new&limit=${params.limit || 15}`;
 
     try {
       let res = await fetch(searchUrl, {
@@ -128,9 +130,10 @@ export class RedditConnector implements DataSourceConnector {
         signal: AbortSignal.timeout(6000),
       });
 
-      // If specific city subreddit 404s (e.g. r/nashik doesn't exist), fall back to r/india with city in query
+      // If specific city subreddit 404s (e.g. r/ahmednagar is small/unindexed), fall back to r/maharashtra or r/india
       if (!res.ok) {
-        const fallbackUrl = `https://oauth.reddit.com/r/india/search?q=${encodeURIComponent(`${city} ${kw}`)}&restrict_sr=1&sort=new&limit=${params.limit || 15}`;
+        const fallbackSub = isAhilyanagar ? 'maharashtra' : 'india';
+        const fallbackUrl = `https://oauth.reddit.com/r/${fallbackSub}/search?q=${encodeURIComponent(`${searchTerm}`)}&restrict_sr=1&sort=new&limit=${params.limit || 15}`;
         res = await fetch(fallbackUrl, {
           headers: {
             'Authorization': `Bearer ${token}`,
@@ -179,10 +182,16 @@ export class RedditConnector implements DataSourceConnector {
       let city = item.queryCity;
       if (!city && item.subreddit) {
         const sub = item.subreddit.toLowerCase();
-        if (sub === 'pune') city = 'Pune';
+        if (sub === 'ahilyanagar' || sub === 'ahmednagar') city = 'Ahilyanagar';
+        else if (sub === 'pune') city = 'Pune';
         else if (sub === 'nashik') city = 'Nashik';
         else if (sub === 'mumbai') city = 'Mumbai';
         else if (sub === 'bangalore' || sub === 'bengaluru') city = 'Bengaluru';
+      }
+
+      const fullText = (title + ' ' + selftext).toLowerCase();
+      if (fullText.includes('ahilyanagar') || fullText.includes('ahmednagar')) {
+        city = 'Ahilyanagar';
       }
 
       return {

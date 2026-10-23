@@ -151,9 +151,10 @@ export class TrendController {
       const mode = (req.body.mode || 'demo').toLowerCase() as 'demo' | 'live';
       const businessInput = req.body.business || {};
 
-      const city = businessInput.city || req.body.city || 'Nashik';
-      const state = businessInput.state || req.body.state;
-      const country = businessInput.country || req.body.country || 'India';
+      // Ahilyanagar Locked Location Policy
+      const city = 'Ahilyanagar';
+      const state = 'Maharashtra';
+      const country = 'India';
 
       const businessContext: BusinessContext = {
         businessName: businessInput.businessName || 'Local Business',
@@ -183,6 +184,15 @@ export class TrendController {
 
       return res.json({
         success: true,
+        dataMode: result.dataMode,
+        location: {
+          city: result.city,
+          state: result.state,
+          country: result.country,
+        },
+        trends: result.analyzedTrends,
+        sources: result.sources,
+        pipelineRunId: result.runId,
         data: {
           location: {
             city: result.city,
@@ -198,6 +208,7 @@ export class TrendController {
           opportunity: result.topTrend?.opportunity,
           actionPlan: result.topTrend?.actionPlan,
           stats: result.stats,
+          pipelineRunId: result.runId,
         },
         error: null,
         meta: {

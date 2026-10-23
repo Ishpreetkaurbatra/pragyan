@@ -3,6 +3,7 @@ import { TrendCluster, BusinessFit } from '../../models/intelligence-pipeline.ty
 export interface EvaluatedTrend {
   cluster: TrendCluster;
   locationRelevance: number;
+  locationReason?: string;
   businessFit: BusinessFit;
   selectionScore: number;
 }
@@ -16,14 +17,15 @@ export class HighValueSelector {
    * - Location Relevance (25%)
    */
   public selectHighValueTrends(
-    candidates: Array<{ cluster: TrendCluster; locationRelevance: number; businessFit: BusinessFit }>,
+    candidates: Array<{ cluster: TrendCluster; locationRelevance: number; locationReason?: string; businessFit: BusinessFit }>,
     maxLimit: number = 5
   ): EvaluatedTrend[] {
     const scored = candidates.map(c => {
+      const normalizedLocScore = c.locationRelevance <= 1 ? c.locationRelevance * 100 : c.locationRelevance;
       const selectionScore = Math.round(
         c.businessFit.totalScore * 0.40 +
         c.cluster.trendScore.totalScore * 0.35 +
-        c.locationRelevance * 0.25
+        normalizedLocScore * 0.25
       );
 
       return {

@@ -29,6 +29,27 @@ class ApiClient {
     return this.activeRole;
   }
 
+  private getApiUrl(endpoint: string): string {
+    const rawBase = (
+      (import.meta.env.VITE_API_BASE_URL as string | undefined) ||
+      (import.meta.env.VITE_API_URL as string | undefined) ||
+      ''
+    ).trim();
+
+    const cleanEndpoint = endpoint.startsWith('/') ? endpoint : `/${endpoint}`;
+
+    if (!rawBase) {
+      // In local development or when VITE_API_BASE_URL is not set, use relative /api
+      return `/api${cleanEndpoint}`;
+    }
+
+    const normalizedBase = rawBase.replace(/\/+$/, '');
+    if (!normalizedBase.endsWith('/api')) {
+      return `${normalizedBase}/api${cleanEndpoint}`;
+    }
+    return `${normalizedBase}${cleanEndpoint}`;
+  }
+
   private async request<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
     const headers = {
       'Content-Type': 'application/json',
@@ -36,14 +57,49 @@ class ApiClient {
       ...(options.headers || {}),
     };
 
-    const res = await fetch(`/api${endpoint}`, {
-      ...options,
-      headers,
-    });
+    const url = this.getApiUrl(endpoint);
 
-    const json = await res.json();
+    let res: Response;
+    try {
+      res = await fetch(url, {
+        ...options,
+        headers,
+      });
+    } catch (networkErr: unknown) {
+      const errMessage = networkErr instanceof Error ? networkErr.message : String(networkErr);
+      console.error(`[API Network Error] ${options.method || 'GET'} ${url}:`, errMessage);
+      throw new Error('Backend unavailable. Please check the T→G server connection.');
+    }
+
+    // Inspect Content-Type header before attempting JSON parsing
+    const contentType = (res.headers.get('content-type') || '').toLowerCase();
+    const isJson = contentType.includes('application/json') || contentType.includes('application/problem+json');
+
+    if (!isJson) {
+      let rawSnippet = '';
+      try {
+        const text = await res.text();
+        rawSnippet = text.slice(0, 150).trim();
+      } catch {
+        // ignore read error
+      }
+      console.error(
+        `[API Error] Received non-JSON response (${res.status} ${res.statusText}, Content-Type: ${contentType}) from ${url}:`,
+        rawSnippet
+      );
+      throw new Error('Backend unavailable. Please check the T→G server connection.');
+    }
+
+    let json: any;
+    try {
+      json = await res.json();
+    } catch (parseErr) {
+      console.error(`[API Parse Error] Failed to parse JSON from ${url}:`, parseErr);
+      throw new Error('Backend unavailable. Please check the T→G server connection.');
+    }
+
     if (!res.ok || json.success === false) {
-      const msg = json.error?.message || `HTTP ${res.status} Error`;
+      const msg = json.error?.message || `HTTP ${res.status} Error: ${res.statusText || 'Request failed'}`;
       throw new Error(msg);
     }
 
@@ -53,6 +109,28 @@ class ApiClient {
   // --- Auth ---
   public async getMe(): Promise<{ user: Profile; business: Business }> {
     return this.request('/auth/me');
+  }
+
+  public async login(email: string, role?: UserRole): Promise<{ token: string; user: Profile }> {
+    const res = await this.request<{ token: string; user: Profile }>('/auth/login', {
+      method: 'POST',
+      body: JSON.stringify({ email, role: role || this.getActiveRole() }),
+    });
+    if (res.user?.role) {
+      this.setActiveRole(res.user.role as UserRole);
+    }
+    return res;
+  }
+
+  public async register(data: { email: string; fullName: string; role?: UserRole }): Promise<{ token: string; user: Profile }> {
+    const res = await this.request<{ token: string; user: Profile }>('/auth/register', {
+      method: 'POST',
+      body: JSON.stringify(data),
+    });
+    if (res.user?.role) {
+      this.setActiveRole(res.user.role as UserRole);
+    }
+    return res;
   }
 
   public async switchRole(role: UserRole): Promise<{ token: string; user: Profile }> {

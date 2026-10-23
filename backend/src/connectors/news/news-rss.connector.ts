@@ -88,11 +88,17 @@ export class NewsRSSConnector implements DataSourceConnector {
   public async fetchSignals(params: FetchSignalParams): Promise<TrendSignal[]> {
     await this.respectRateLimit();
 
+    const cityLower = (params.city || '').toLowerCase();
+    const isAhilyanagar = cityLower === 'ahilyanagar' || cityLower === 'ahmednagar';
+
+    const cityQuery = isAhilyanagar
+      ? '(Ahilyanagar OR Ahmednagar)'
+      : (params.city || '');
+
     const query = [
-      params.city || '',
+      cityQuery,
       ...(params.keywords || []),
-      'business',
-      'trend',
+      'business OR market OR demand OR cafe OR retail OR trend',
     ].filter(Boolean).join(' ');
 
     const searchUrl = `https://news.google.com/rss/search?q=${encodeURIComponent(query)}&hl=en-IN&gl=IN&ceid=IN:en`;
@@ -139,8 +145,11 @@ export class NewsRSSConnector implements DataSourceConnector {
       const sourceRecordId = guid || link || id;
 
       let city = params?.city;
-      if (!city) {
-        const full = `${title} ${text}`.toLowerCase();
+      const full = `${title} ${text}`.toLowerCase();
+
+      if (full.includes('ahilyanagar') || full.includes('ahmednagar') || full.includes('shirdi') || full.includes('sangamner') || full.includes('shrirampur')) {
+        city = 'Ahilyanagar';
+      } else if (!city) {
         if (full.includes('pune')) city = 'Pune';
         else if (full.includes('nashik')) city = 'Nashik';
         else if (full.includes('mumbai')) city = 'Mumbai';

@@ -34,7 +34,7 @@ export class DemoConnector implements DataSourceConnector {
   }
 
   public async fetchSignals(params: FetchSignalParams): Promise<TrendSignal[]> {
-    const city = params.city || 'Nashik';
+    const city = params.city || 'Ahilyanagar';
     const state = params.state || 'Maharashtra';
     const country = params.country || 'India';
 

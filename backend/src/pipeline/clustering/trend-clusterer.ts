@@ -18,6 +18,11 @@ export class TrendClusterer {
     category: string;
     tokens: string[];
   }> = [
+    { name: 'Artisan Cold Beverages & Thick Shakes', category: 'Food & Beverage', tokens: ['thick shake', 'shakes', 'cold coffee', 'frappe', 'cold brew'] },
+    { name: 'Millet-Based Healthy Snacks', category: 'Food & Beverage', tokens: ['millet', 'jowar', 'bajra', 'puffs', 'roasted snacks', 'clean label'] },
+    { name: 'Eco-Friendly Pilgrimage & Food Packaging', category: 'Sustainable Living', tokens: ['bagasse', 'biodegradable', 'packaging', 'compostable', 'paper carry'] },
+    { name: 'Smart Farm-to-Table Dairy & Organic Produce', category: 'Agri & Retail', tokens: ['a2 cow', 'organic milk', 'farm to table', 'dairy', 'organic produce', 'farm vegetables'] },
+    { name: 'Commercial Hospitality & Hotel Expansion', category: 'Hospitality & Retail', tokens: ['lemon tree', 'hotel', 'hospitality', 'accommodation', 'commercial hub', 'midc'] },
     { name: 'Matcha Beverages', category: 'Food & Beverage', tokens: ['matcha', 'latte', 'ceremonial', 'frappe'] },
     { name: 'Protein Snacks', category: 'Food & Beverage', tokens: ['protein', 'snack', 'whey', 'keto', 'bars', 'cookies', 'munchies'] },
     { name: 'Cold Brew', category: 'Food & Beverage', tokens: ['cold brew', 'nitro', 'roast', 'iced coffee', 'pour over'] },
