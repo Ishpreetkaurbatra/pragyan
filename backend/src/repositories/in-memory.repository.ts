@@ -1,5 +1,6 @@
 import { v4 as uuidv4 } from 'uuid';
 import { IRepository } from './repository.interface';
+import { PipelineRepository } from './pipeline.repository';
 import {
   Profile,
   Business,
@@ -827,7 +828,31 @@ export class InMemoryRepository implements IRepository {
   }
 
   public async getTrendSignals(trendId: string): Promise<RawSignal[]> {
-    return this.rawSignals.filter(s => s.metadata?.trend_id === trendId);
+    const memorySignals = this.rawSignals.filter(s => s.metadata?.trend_id === trendId);
+    if (memorySignals.length > 0) return memorySignals;
+
+    // Check PipelineRepository for cluster signals from pipeline runs
+    const pipelineSignals = PipelineRepository.getInstance().getClusterSignals(trendId);
+    if (pipelineSignals.length > 0) {
+      return pipelineSignals.map(sig => ({
+        id: sig.id,
+        source_id: sig.source,
+        external_id: sig.sourceRecordId,
+        title: sig.title,
+        original_text: sig.text || sig.title,
+        url: sig.url,
+        published_at: sig.timestamp,
+        collected_at: sig.collectedAt || sig.timestamp,
+        metadata: {
+          trend_id: trendId,
+          metrics: sig.rawMetrics || sig.engagementMetrics,
+          source: sig.source,
+          location: sig.location?.city || '',
+        },
+      }));
+    }
+
+    return [];
   }
 
   public async getDataSources(): Promise<DataSource[]> {

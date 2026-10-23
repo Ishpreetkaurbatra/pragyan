@@ -8,7 +8,10 @@ const controller = new TrendController();
 router.use(authMiddleware);
 
 router.get('/', controller.getTrends);
+router.post('/analyze', controller.analyzeTrend);
 router.get('/sources', controller.getSources);
+router.get('/sources/status', controller.getSourcesStatus);
+router.get('/runs/:id', controller.getPipelineRun);
 router.get('/saved', controller.getSavedTrends);
 router.get('/:id', controller.getTrendById);
 router.get('/:id/signals', controller.getTrendSignals);

@@ -8,20 +8,91 @@ import {
   Building2, 
   TrendingUp, 
   Target, 
-  Clock,
-  Sparkles,
-  UserCheck
+  Clock, 
+  Sparkles, 
+  UserCheck, 
+  Mail, 
+  Phone, 
+  Award, 
+  Users, 
+  ChevronRight, 
+  X,
+  BotMessageSquare
 } from 'lucide-react';
 import { ExpertReview } from '../types';
 import { api } from '../services/api/client';
 
-export const ExpertValidationPage: React.FC = () => {
+interface Expert {
+  id: string;
+  name: string;
+  role: string;
+  expertise: string;
+  email: string;
+  phone: string;
+  availability: string;
+  rating: string;
+  avatar: string;
+}
+
+interface ExpertValidationPageProps {
+  onNavigateTab?: (tab: string) => void;
+}
+
+export const ExpertValidationPage: React.FC<ExpertValidationPageProps> = ({ onNavigateTab }) => {
   const [reviews, setReviews] = useState<ExpertReview[]>([]);
   const [selectedReview, setSelectedReview] = useState<ExpertReview | null>(null);
-  const [comments, setComments] = useState('');
-  const [suggestedChanges, setSuggestedChanges] = useState('');
   const [loading, setLoading] = useState(true);
-  const [actionLoading, setActionLoading] = useState(false);
+  const [changeExpertOpen, setChangeExpertOpen] = useState(false);
+
+  // Available human strategists pool (Demo structured data)
+  const expertsList: Expert[] = [
+    {
+      id: 'exp-1',
+      name: 'Rajesh Kulkarni',
+      role: 'Senior Hospitality & Retail Strategist',
+      expertise: 'Café Menu Margins, Fast-Casual Sourcing, Student Transit Nodes',
+      email: 'rajesh@stratgrowth.in',
+      phone: '+91 98230 44120',
+      availability: 'Available (Avg. review turnaround: 6 hours)',
+      rating: '4.9 ★ (38 Café Validations)',
+      avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=200&q=80'
+    },
+    {
+      id: 'exp-2',
+      name: 'Anita Desai',
+      role: 'Beverage Innovation Specialist',
+      expertise: 'Cold Brew Systems, Signature Syrups, Youth Drink Palates',
+      email: 'anita.desai@bevglow.demo',
+      phone: '+91 98231 88412',
+      availability: 'Available (Avg. review turnaround: 4 hours)',
+      rating: '4.95 ★ (29 Beverage Reviews)',
+      avatar: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=200&q=80'
+    },
+    {
+      id: 'exp-3',
+      name: 'Vikram Sen',
+      role: 'QSR Kitchen Operations & Margin Engineer',
+      expertise: 'Kitchen Station Throughput, Batching, Ingredient Waste Minimization',
+      email: 'vikram.sen@qsrgrowth.demo',
+      phone: '+91 98234 11209',
+      availability: 'Available Tomorrow',
+      rating: '4.85 ★ (44 Operations Audits)',
+      avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=200&q=80'
+    },
+    {
+      id: 'exp-4',
+      name: 'Meera Nair',
+      role: 'Campus Retail Demographic Marketer',
+      expertise: 'Student Peer Bundles, High-Footfall Timing, Promotional Packaging',
+      email: 'meera.nair@campusinsights.demo',
+      phone: '+91 98239 67543',
+      availability: 'Available (Avg. review turnaround: 8 hours)',
+      rating: '4.9 ★ (31 Retail Validations)',
+      avatar: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=crop&w=200&q=80'
+    }
+  ];
+
+  const [assignedExpert, setAssignedExpert] = useState<Expert>(expertsList[0]);
 
   useEffect(() => {
     loadReviews();
@@ -34,8 +105,6 @@ export const ExpertValidationPage: React.FC = () => {
       setReviews(data);
       if (data.length > 0) {
         setSelectedReview(data[0]);
-        setComments(data[0].comments || '');
-        setSuggestedChanges(data[0].suggested_changes || '');
       }
     } catch (err) {
       console.error(err);
@@ -44,233 +113,270 @@ export const ExpertValidationPage: React.FC = () => {
     }
   };
 
-  const handleApprove = async () => {
-    if (!selectedReview) return;
-    setActionLoading(true);
-    try {
-      await api.approveReview(selectedReview.id, comments, suggestedChanges);
-      await loadReviews();
-    } catch (e) {
-      console.error(e);
-    } finally {
-      setActionLoading(false);
-    }
-  };
-
-  const handleRequestChanges = async () => {
-    if (!selectedReview) return;
-    setActionLoading(true);
-    try {
-      await api.requestChangesReview(selectedReview.id, comments || 'Changes requested by expert.', suggestedChanges);
-      await loadReviews();
-    } catch (e) {
-      console.error(e);
-    } finally {
-      setActionLoading(false);
-    }
-  };
-
-  const handleReject = async () => {
-    if (!selectedReview) return;
-    setActionLoading(true);
-    try {
-      await api.rejectReview(selectedReview.id, comments || 'Rejected by expert.', 'Risk exceeds return.');
-      await loadReviews();
-    } catch (e) {
-      console.error(e);
-    } finally {
-      setActionLoading(false);
-    }
+  const handleSelectExpert = (exp: Expert) => {
+    setAssignedExpert(exp);
+    setChangeExpertOpen(false);
   };
 
   if (loading) {
     return (
       <div className="flex justify-center items-center h-64">
-        <div className="w-10 h-10 border-4 border-primary-blue border-t-transparent rounded-full animate-spin"></div>
+        <div className="w-10 h-10 border-4 border-primaryblue border-t-transparent rounded-full animate-spin"></div>
       </div>
     );
   }
 
   return (
     <div className="space-y-8 max-w-[1600px] mx-auto pb-16">
-      {/* Header with human-in-the-loop guarantee banner */}
+      
+      {/* Header */}
       <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 p-6 lg:p-8 rounded-[28px] glass-panel border border-white/80 shadow-soft-glass">
         <div>
-          <div className="flex items-center space-x-2">
-            <span className="text-[10px] font-extrabold uppercase tracking-wider px-3 py-1 rounded-full bg-light-blue text-dark-blue border border-primary-blue/20">
-              Human-in-the-Loop Quality Gate
-            </span>
-            <span className="text-xs text-slate-400">•</span>
-            <span className="text-xs text-slate-600 font-medium">Domain Strategist Validation Queue</span>
+          <div className="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-lightblue text-darkblue text-xs font-bold uppercase tracking-wider mb-2 border border-primaryblue/20">
+            <ShieldCheck className="w-4 h-4 text-primaryblue" />
+            <span>Human-in-the-Loop Strategic Quality Assurance</span>
           </div>
-          <h1 className="font-display font-extrabold text-2xl lg:text-3xl text-navy mt-1.5">
-            Expert Review & Launch Authorization
+          <h1 className="font-display font-extrabold text-2xl lg:text-3xl text-navy">
+            Expert Validation Center
           </h1>
-          <p className="text-xs sm:text-sm text-slate-600 font-medium mt-0.5">
-            AI synthesizes market intelligence and draft playbooks. Domain experts provide operational sanity checks before live testing.
+          <p className="text-xs sm:text-sm text-slate-600 font-medium mt-1">
+            Every commercial playbook is audited by certified hospitality & retail strategists before capital deployment.
           </p>
         </div>
 
         <div className="flex items-center space-x-3">
-          <span className="text-xs font-bold px-4 py-2.5 rounded-2xl bg-white/80 backdrop-blur-md border border-white/90 text-navy shadow-sm flex items-center space-x-2">
-            <UserCheck className="w-4 h-4 text-primary-blue" />
-            <span>Assigned: Rajesh Kulkarni (Retail & F&B Strategist)</span>
+          <button
+            onClick={() => setChangeExpertOpen(true)}
+            className="btn-secondary-blue px-4 py-2.5 text-xs font-bold shadow-soft-glass flex items-center space-x-2 cursor-pointer"
+          >
+            <Users className="w-4 h-4 text-white" />
+            <span>Change Assigned Expert</span>
+          </button>
+        </div>
+      </div>
+
+      {/* ========================================================
+          ASSIGNED HUMAN EXPERT DISPLAY CARD (Requirement 13)
+          ======================================================== */}
+      <div className="glass-panel p-6 sm:p-7 rounded-[28px] border border-white/90 shadow-soft-glass bg-gradient-to-br from-white/95 to-slate-50/80 space-y-5">
+        <div className="flex items-center justify-between border-b border-slate-100 pb-3">
+          <div className="flex items-center space-x-2">
+            <UserCheck className="w-4 h-4 text-growthgreen" />
+            <span className="font-display font-extrabold text-xs uppercase tracking-wider text-navy">
+              Current Assigned Strategist
+            </span>
+          </div>
+          <span className="text-[10px] font-bold px-2.5 py-1 rounded-full bg-lightgreen text-darkgreen">
+            Assigned to FreshBite Café
           </span>
         </div>
-      </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-        {/* Left: Queue list (4 cols) */}
-        <div className="lg:col-span-4 space-y-3.5">
-          <div className="px-2 text-xs font-bold uppercase tracking-wider text-slate-500">
-            Pending Authorization Queue ({reviews.length})
-          </div>
-
-          {reviews.map((rev) => (
-            <div
-              key={rev.id}
-              onClick={() => {
-                setSelectedReview(rev);
-                setComments(rev.comments || '');
-                setSuggestedChanges(rev.suggested_changes || '');
-              }}
-              className={`p-5 rounded-2xl cursor-pointer transition-all duration-200 border ${
-                selectedReview?.id === rev.id
-                  ? 'bg-white/95 border-primary-blue shadow-glass-hover ring-2 ring-primary-blue/20'
-                  : 'glass-card hover:bg-white/90 border-white/70'
-              }`}
-            >
-              <div className="flex items-start justify-between gap-2">
-                <h4 className="font-bold text-xs sm:text-sm text-navy leading-snug">
-                  {rev.actionPlan?.title || 'Action Plan Evaluation'}
-                </h4>
-                <span className={`text-[10px] font-extrabold px-2.5 py-0.5 rounded-full uppercase ${
-                  rev.status === 'approved' ? 'bg-light-green text-dark-green border border-growth/20' :
-                  rev.status === 'pending' ? 'bg-warning-bg text-amber-800 border border-warning-orange/30' : 
-                  'bg-rose-100 text-rose-700 border border-rose-200'
-                }`}>
-                  {rev.status}
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
+          <div className="flex items-center space-x-4">
+            <img 
+              src={assignedExpert.avatar} 
+              alt={assignedExpert.name} 
+              className="w-16 h-16 sm:w-20 sm:h-20 rounded-full object-cover border-3 border-white ring-4 ring-primaryblue/15 shadow-md flex-shrink-0"
+            />
+            <div className="space-y-1">
+              <div className="flex items-center space-x-2">
+                <h3 className="font-display font-extrabold text-lg sm:text-xl text-navy">
+                  {assignedExpert.name}
+                </h3>
+                <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-lightblue text-darkblue">
+                  {assignedExpert.rating}
                 </span>
               </div>
-              <p className="text-[11px] text-slate-500 mt-2 font-medium">
-                Business: <span className="text-navy font-semibold">{rev.business?.business_name || 'FreshBite Café'}</span>
+              <p className="text-xs font-bold text-primaryblue">
+                {assignedExpert.role}
               </p>
-            </div>
-          ))}
-        </div>
-
-        {/* Right: Review Details & Decision Panel (8 cols) */}
-        {selectedReview && (
-          <div className="lg:col-span-8 glass-panel p-6 sm:p-8 rounded-[28px] border border-white/80 shadow-soft-glass space-y-6">
-            <div className="border-b border-slate-200/60 pb-5">
-              <span className="text-[10px] font-extrabold uppercase tracking-wider text-teal">
-                Validation Dossier #{selectedReview.id.substring(0, 8)}
-              </span>
-              <h2 className="font-display font-extrabold text-xl sm:text-2xl text-navy mt-1">
-                {selectedReview.actionPlan?.title}
-              </h2>
-              <p className="text-xs text-slate-600 mt-1">
-                Target Business: <strong className="text-navy font-semibold">{selectedReview.business?.business_name}</strong> • Location: <strong className="text-navy font-semibold">{selectedReview.business?.location}</strong>
+              <p className="text-xs text-slate-600 max-w-xl font-medium">
+                {assignedExpert.expertise}
               </p>
-            </div>
-
-            {/* Strategic Summary Box */}
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3.5 text-xs">
-              <div className="p-4 rounded-2xl bg-white/70 backdrop-blur-md border border-white/80 shadow-sm">
-                <span className="text-[10px] uppercase font-bold text-slate-500">Business Fit Score</span>
-                <div className="font-extrabold text-lg text-growth mt-0.5">91% High Alignment</div>
-              </div>
-              <div className="p-4 rounded-2xl bg-white/70 backdrop-blur-md border border-white/80 shadow-sm">
-                <span className="text-[10px] uppercase font-bold text-slate-500">Risk Assessment</span>
-                <div className="font-extrabold text-lg text-dark-green mt-0.5">LOW Operational Risk</div>
-              </div>
-              <div className="p-4 rounded-2xl bg-white/70 backdrop-blur-md border border-white/80 shadow-sm">
-                <span className="text-[10px] uppercase font-bold text-slate-500">Pilot Duration</span>
-                <div className="font-extrabold text-lg text-primary-blue mt-0.5">{selectedReview.actionPlan?.test_duration || '7 Days'}</div>
-              </div>
-            </div>
-
-            {/* Action plan summary */}
-            <div className="p-5 rounded-2xl bg-white/60 border border-white/80 space-y-2 text-xs shadow-sm">
-              <div className="font-bold text-navy text-xs sm:text-sm">Plan Implementation Summary:</div>
-              <p className="text-slate-600 leading-relaxed font-normal">
-                {selectedReview.actionPlan?.what_to_launch}
-              </p>
-              <div className="pt-2 flex flex-wrap gap-4 text-[11px] text-slate-500">
-                <span>Target: <strong className="text-navy">{selectedReview.actionPlan?.target_customer}</strong></span>
-                <span>Price: <strong className="text-dark-green font-bold">{selectedReview.actionPlan?.suggested_price}</strong></span>
-                <span>Timing: <strong className="text-navy">{selectedReview.actionPlan?.test_timing}</strong></span>
-              </div>
-            </div>
-
-            {/* Expert Input Form */}
-            <div className="space-y-4 pt-2">
-              <h3 className="font-display font-bold text-sm text-navy flex items-center space-x-2">
-                <MessageSquare className="w-4 h-4 text-primary-blue" />
-                <span>Expert Validation Assessment & Directives</span>
-              </h3>
-
-              <div className="space-y-3.5">
-                <div>
-                  <label className="block text-xs font-semibold text-slate-600 mb-1.5">
-                    Operational Commentary & Guidance
-                  </label>
-                  <textarea
-                    rows={3}
-                    value={comments}
-                    onChange={(e) => setComments(e.target.value)}
-                    placeholder="Enter your expert assessment, kitchen operational suggestions, or risk mitigations..."
-                    className="w-full p-3.5 text-xs rounded-2xl border border-slate-200/80 bg-white/90 focus:outline-none focus:border-primary-blue focus:ring-2 focus:ring-primary-blue/20 transition-all font-normal text-navy"
-                  />
-                </div>
-
-                <div>
-                  <label className="block text-xs font-semibold text-slate-600 mb-1.5">
-                    Suggested Changes (Optional)
-                  </label>
-                  <input
-                    type="text"
-                    value={suggestedChanges}
-                    onChange={(e) => setSuggestedChanges(e.target.value)}
-                    placeholder="e.g. Pre-portion spice mixes in morning prep to protect 4-minute rush SLA"
-                    className="w-full p-3.5 text-xs rounded-2xl border border-slate-200/80 bg-white/90 focus:outline-none focus:border-primary-blue focus:ring-2 focus:ring-primary-blue/20 transition-all font-normal text-navy"
-                  />
-                </div>
-              </div>
-
-              {/* Decision Action Buttons - Bold High-Contrast */}
-              <div className="flex flex-wrap items-center gap-3 pt-4 border-t border-slate-200/60">
-                <button
-                  onClick={handleApprove}
-                  disabled={actionLoading}
-                  className="btn-secondary-green px-6 py-2.5 text-xs font-bold shadow-soft-glass flex items-center space-x-2"
-                >
-                  <CheckCircle2 className="w-4 h-4" />
-                  <span>Approve & Authorize Live Pilot</span>
-                </button>
-
-                <button
-                  onClick={handleRequestChanges}
-                  disabled={actionLoading}
-                  className="px-5 py-2.5 rounded-xl bg-amber-600 hover:bg-amber-700 text-white font-bold text-xs shadow-soft-glass transition-all flex items-center space-x-2 disabled:opacity-50"
-                >
-                  <AlertCircle className="w-4 h-4" />
-                  <span>Request Modifications</span>
-                </button>
-
-                <button
-                  onClick={handleReject}
-                  disabled={actionLoading}
-                  className="px-5 py-2.5 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-bold text-xs shadow-soft-glass transition-all flex items-center space-x-2 disabled:opacity-50"
-                >
-                  <XCircle className="w-4 h-4" />
-                  <span>Reject Blueprint</span>
-                </button>
-              </div>
             </div>
           </div>
-        )}
+
+          {/* Contact Details & Availability Card */}
+          <div className="p-4 rounded-2xl bg-white/90 border border-white/90 shadow-xs space-y-2 text-xs min-w-[280px]">
+            <div className="flex items-center space-x-2 text-slate-700">
+              <Mail className="w-4 h-4 text-primaryblue flex-shrink-0" />
+              <span className="font-mono text-[11px] font-medium">{assignedExpert.email}</span>
+            </div>
+            <div className="flex items-center space-x-2 text-slate-700">
+              <Phone className="w-4 h-4 text-growthgreen flex-shrink-0" />
+              <span className="font-mono text-[11px] font-medium">{assignedExpert.phone}</span>
+            </div>
+            <div className="flex items-center space-x-2 text-slate-700 pt-1 border-t border-slate-100">
+              <Clock className="w-4 h-4 text-amber-500 flex-shrink-0" />
+              <span className="text-[11px] text-slate-500">{assignedExpert.availability}</span>
+            </div>
+          </div>
+        </div>
+
+        <div className="flex items-center justify-between pt-1 text-xs">
+          <span className="text-slate-400 text-[11px]">
+            Demo Strategist Profile • Real consultations route directly to verified regional advisors
+          </span>
+
+          <button
+            onClick={() => setChangeExpertOpen(true)}
+            className="font-bold text-primaryblue hover:underline cursor-pointer flex items-center space-x-1"
+          >
+            <span>Switch to Another Specialist</span>
+            <ChevronRight className="w-3.5 h-3.5" />
+          </button>
+        </div>
       </div>
+
+      {/* Strategist Verdict & Validation Assessment */}
+      {selectedReview && (
+        <div className="w-full glass-panel p-6 sm:p-8 rounded-[28px] border border-white/80 shadow-soft-glass space-y-5">
+          <div className="border-b border-slate-100 pb-4">
+            <span className="text-[10px] font-extrabold uppercase text-growthgreen tracking-wider">
+              STRATEGIST VERDICT
+            </span>
+            <h2 className="font-display font-extrabold text-xl sm:text-2xl text-navy mt-1">
+              Validation Assessment: {assignedExpert.name}
+            </h2>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+            <div className="p-4 rounded-2xl bg-white/80 border border-white/90">
+              <span className="text-slate-400 font-bold uppercase text-[10px] block">Feasibility Score</span>
+              <span className="font-display font-extrabold text-3xl text-primaryblue mt-1 block">
+                {selectedReview.confidence ? Math.round(selectedReview.confidence * 100) : 88} / 100
+              </span>
+              <span className="text-growthgreen font-bold text-[11px]">High Execution Readiness</span>
+            </div>
+
+            <div className="p-4 rounded-2xl bg-white/80 border border-white/90">
+              <span className="text-slate-400 font-bold uppercase text-[10px] block">Kitchen Complexity</span>
+              <span className="font-display font-extrabold text-3xl text-growthgreen mt-1 block">
+                Low Risk
+              </span>
+              <span className="text-slate-500 text-[11px]">Existing fryers sufficient</span>
+            </div>
+          </div>
+
+          <div className="p-4 rounded-2xl bg-white/80 border border-white/90 space-y-1.5 text-xs">
+            <span className="font-extrabold uppercase text-navy text-[10px] tracking-wider block">
+              Expert Comments & Field Guidance
+            </span>
+            <p className="text-slate-700 leading-relaxed font-medium">
+              {selectedReview.comments || 'Strong potential for late-afternoon traffic lift. Recommend pre-cutting potatoes in morning prep to keep order times under 3 minutes during student rush.'}
+            </p>
+          </div>
+
+          <div className="p-4 rounded-2xl bg-lightgreen/30 border border-growthgreen/20 space-y-1 text-xs text-darkgreen">
+            <span className="font-extrabold uppercase text-[10px] tracking-wider block">
+              Commercial Recommendation
+            </span>
+            <p className="font-semibold leading-relaxed">
+              Approved for 7-day live market pilot. Target: 25+ daily orders with min 60% gross margin.
+            </p>
+          </div>
+        </div>
+      )}
+
+      {/* ========================================================
+          CHANGE EXPERT MODAL (Requirement 13)
+          ======================================================== */}
+      {changeExpertOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-navy/50 backdrop-blur-sm animate-in fade-in duration-200">
+          <div className="w-full max-w-2xl glass-panel bg-white/98 backdrop-blur-2xl p-6 sm:p-7 rounded-[32px] border border-white shadow-2xl space-y-5 animate-in zoom-in-95 duration-200">
+            <div className="flex items-center justify-between border-b border-slate-100 pb-3">
+              <div>
+                <h3 className="font-display font-extrabold text-lg text-navy">
+                  Select Certified Business Strategist
+                </h3>
+                <p className="text-xs text-slate-500">
+                  Choose a domain expert aligned with your current culinary and growth focus.
+                </p>
+              </div>
+              <button
+                onClick={() => setChangeExpertOpen(false)}
+                className="p-2 rounded-xl glass-card text-slate-400 hover:text-navy cursor-pointer"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            <div className="space-y-3 max-h-[60vh] overflow-y-auto pr-1 scrollbar-thin">
+              {expertsList.map((exp) => {
+                const isCurrent = exp.id === assignedExpert.id;
+                return (
+                  <div
+                    key={exp.id}
+                    className={`p-4 rounded-2xl border transition-all flex flex-col sm:flex-row sm:items-center justify-between gap-4 ${
+                      isCurrent
+                        ? 'bg-lightblue/30 border-primaryblue ring-2 ring-primaryblue/20'
+                        : 'bg-white/80 border-slate-200 hover:bg-white hover:border-slate-300'
+                    }`}
+                  >
+                    <div className="flex items-center space-x-3.5">
+                      <img 
+                        src={exp.avatar} 
+                        alt={exp.name} 
+                        className="w-12 h-12 rounded-full object-cover border-2 border-white shadow-xs flex-shrink-0"
+                      />
+                      <div className="space-y-0.5">
+                        <div className="flex items-center space-x-2">
+                          <h4 className="font-bold text-sm text-navy">{exp.name}</h4>
+                          <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-slate-100 text-slate-600">
+                            {exp.rating}
+                          </span>
+                        </div>
+                        <p className="text-xs font-semibold text-primaryblue">{exp.role}</p>
+                        <p className="text-[11px] text-slate-500">{exp.expertise}</p>
+                      </div>
+                    </div>
+
+                    <button
+                      onClick={() => handleSelectExpert(exp)}
+                      className={`px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer flex-shrink-0 ${
+                        isCurrent
+                          ? 'bg-primaryblue text-white shadow-xs'
+                          : 'btn-secondary-blue text-white'
+                      }`}
+                    >
+                      {isCurrent ? 'Currently Assigned' : 'Select This Expert'}
+                    </button>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ========================================================
+          AI CHATBOT CALLOUT BANNER (Requirement 15)
+          ======================================================== */}
+      <div className="glass-panel p-6 sm:p-7 rounded-[28px] border border-primaryblue/30 bg-gradient-to-r from-lightblue/40 via-white/80 to-lightgreen/30 flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-soft-glass">
+        <div className="flex items-center space-x-3.5">
+          <div className="w-11 h-11 rounded-2xl bg-primaryblue text-white flex items-center justify-center flex-shrink-0 shadow-sm">
+            <BotMessageSquare className="w-5 h-5" />
+          </div>
+          <div>
+            <h4 className="font-display font-extrabold text-sm sm:text-base text-navy">
+              Have questions about expert feedback? Ask T→G AI
+            </h4>
+            <p className="text-xs text-slate-600 font-medium">
+              Ask how to incorporate Rajesh's prep recommendations into your staff shifts.
+            </p>
+          </div>
+        </div>
+
+        <button
+          onClick={() => {
+            if (onNavigateTab) onNavigateTab('ask-tg');
+          }}
+          className="btn-primary py-2.5 px-5 text-xs font-bold shadow-soft-glass cursor-pointer flex-shrink-0"
+        >
+          <span>Ask AI Chatbot</span>
+        </button>
+      </div>
+
     </div>
   );
 };

@@ -11,6 +11,7 @@ import alertRoutes from './alert.routes';
 import dashboardRoutes from './dashboard.routes';
 import adminRoutes from './admin.routes';
 import askTgRoutes from './ask-tg.routes';
+import pipelineRoutes from './pipeline.routes';
 
 const router = Router();
 
@@ -36,5 +37,6 @@ router.use('/alerts', alertRoutes);
 router.use('/dashboard', dashboardRoutes);
 router.use('/admin', adminRoutes);
 router.use('/ask-tg', askTgRoutes);
+router.use('/pipeline', pipelineRoutes);
 
 export default router;

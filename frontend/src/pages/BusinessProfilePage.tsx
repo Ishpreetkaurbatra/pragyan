@@ -97,20 +97,6 @@ export const BusinessProfilePage: React.FC = () => {
 
   return (
     <div className="space-y-8 max-w-[1400px] mx-auto pb-16">
-      {/* Header */}
-      <div className="p-6 lg:p-8 rounded-[28px] glass-panel border border-white/80 shadow-soft-glass">
-        <div className="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-light-blue text-dark-blue text-xs font-bold uppercase tracking-wider mb-2 border border-primary-blue/20">
-          <Building2 className="w-3.5 h-3.5 text-primary-blue" />
-          <span>Business Footprint Configuration</span>
-        </div>
-        <h1 className="font-display font-extrabold text-2xl lg:text-3xl text-navy">
-          Business Context & Intelligence Architecture
-        </h1>
-        <p className="text-xs sm:text-sm text-slate-600 font-medium mt-1">
-          T→G calibrates trend discovery algorithms and opportunity scoring models against your operational reality
-        </p>
-      </div>
-
       {/* Intelligence Provider Switcher */}
       <div className="glass-panel p-6 sm:p-8 rounded-[28px] border border-white/80 shadow-soft-glass space-y-5">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">

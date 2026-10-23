@@ -7,12 +7,14 @@
     "dev": "ts-node-dev --respawn --transpile-only src/server.ts",
     "build": "tsc",
     "start": "node dist/server.js",
-    "test": "ts-node src/tests/api.test.ts"
+    "test": "ts-node src/tests/api.test.ts && ts-node src/tests/trend-intelligence-engine.test.ts && ts-node src/tests/real-data-connectors.test.ts"
   },
   "dependencies": {
+    "@google/genai": "^2.31.0",
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
     "express": "^4.19.2",
+    "fast-xml-parser": "^5.11.2",
     "pg": "^8.11.5",
     "uuid": "^9.0.1",
     "zod": "^3.23.8"
