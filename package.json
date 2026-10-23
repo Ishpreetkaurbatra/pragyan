@@ -8,13 +8,12 @@
   ],
   "description": "T→G (Trend to Growth) - Complete Full-Stack Business Intelligence Platform with Replaceable Intelligence Layer",
   "scripts": {
-    "install:all": "cd backend && npm install && cd ../frontend && npm install",
-    "dev:backend": "cd backend && npm run dev",
-    "dev:frontend": "cd frontend && npm run dev",
-    "build:backend": "cd backend && npm run build",
-    "build:frontend": "cd frontend && npm run build",
+    "dev:backend": "npm run dev --workspace=tg-backend",
+    "dev:frontend": "npm run dev --workspace=tg-frontend",
+    "build:backend": "npm run build --workspace=tg-backend",
+    "build:frontend": "npm run build --workspace=tg-frontend",
     "build": "npm run build:backend && npm run build:frontend",
-    "test": "cd backend && npm test"
+    "test": "npm test --workspace=tg-backend"
   },
   "keywords": [
     "trend-intelligence",
