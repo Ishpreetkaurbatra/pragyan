@@ -67,3 +67,7 @@ export function createApp() {
 
   return app;
 }
+
+const defaultApp = createApp();
+export { defaultApp as app };
+export default defaultApp;

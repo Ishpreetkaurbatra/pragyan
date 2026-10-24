@@ -18,11 +18,15 @@ try {
   try {
     createApp = require('../backend/dist/app').createApp;
   } catch (e2) {
-    createApp = require('./backend/dist/app').createApp;
+    try {
+      createApp = require('./backend/dist/app').createApp;
+    } catch (e3) {
+      createApp = null;
+    }
   }
 }
 
-const app = createApp();
+const app = typeof createApp === 'function' ? createApp() : express();
 
 app.use(express.static(__dirname));
 
@@ -54,11 +58,15 @@ try {
   try {
     createApp = require('../backend/dist/app').createApp;
   } catch (e2) {
-    createApp = require('./backend/dist/app').createApp;
+    try {
+      createApp = require('./backend/dist/app').createApp;
+    } catch (e3) {
+      createApp = null;
+    }
   }
 }
 
-const app = createApp();
+const app = typeof createApp === 'function' ? createApp() : express();
 
 app.use(express.static(__dirname));
 

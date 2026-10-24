@@ -10,9 +10,9 @@
   "scripts": {
     "dev:backend": "npm run dev --workspace=tg-backend",
     "dev:frontend": "npm run dev --workspace=tg-frontend",
-    "build:backend": "cd backend && npm run build",
-    "build:frontend": "cd frontend && npm run build",
-    "build": "cd backend && npm run build && cd ../frontend && npm run build",
+    "build:backend": "npm run build --workspace=tg-backend",
+    "build:frontend": "npm run build --workspace=tg-frontend",
+    "build": "npm run build --workspace=tg-backend && npm run build --workspace=tg-frontend",
     "test": "npm test --workspace=tg-backend"
   },
   "dependencies": {
@@ -29,5 +29,10 @@
     "glassmorphism"
   ],
   "author": "GrowthWorks",
-  "license": "MIT"
+  "license": "MIT",
+  "allowScripts": {
+    "protobufjs": true,
+    "@google/genai": true,
+    "esbuild": true
+  }
 }

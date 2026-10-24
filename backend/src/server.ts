@@ -3,8 +3,9 @@ import { config } from './config/env';
 
 const app = createApp();
 
-app.listen(config.port, () => {
-  console.log(`
+if (!process.env.VERCEL && process.env.NODE_ENV !== 'test') {
+  app.listen(config.port, () => {
+    console.log(`
 ==============================================================
   T→G (Trend to Growth) — Business Intelligence API
 ==============================================================
@@ -15,5 +16,9 @@ app.listen(config.port, () => {
   Version:           tgo-v1
   API Endpoint:      http://localhost:${config.port}/api
 ==============================================================
-  `);
-});
+    `);
+  });
+}
+
+export { app, createApp };
+export default app;
